@@ -18,7 +18,7 @@
 
     <div class="container">
         <div class="row" style="background-color:lightblue">
-            <div class="column" style="width:50px">
+            <div class="column" style="width:50px" onmouseover="Help('control')" onmouseout="Help(0)">
                 <div> <button id="bCB1" class="controlButton">Play</button> </div>
                 <div> <button id="bCB2" class="controlButton">Stop</button> </div>
                 <div> <button id="bCB3" class="controlButton">Save</button> </div>
@@ -32,7 +32,7 @@
             </div>
             
             <div class="column" style="width:250px">
-                <div class="SequencePanel" onmouseover="Help('sequences')" onmouseout="Help(0)">
+                <div class="SequencePanel">
                     <div>SEQUENCES</div>
                     <div id="bSequence1" style="display:inline-block"> 1 </div>
                     <div id="bSequence2" style="display:inline-block"> 2 </div>
@@ -71,6 +71,12 @@
             <div v class="column" style="width:120px"> <!--This section for controls -->
                 <div>Main Gain</div>
                 <div id="gainControl" onmouseover="Help('gain')" onmouseout="Help(0)"></div>
+                <div>Reverb Amount</div>
+                <div id="reverbTime" onmouseover="Help('reverbTime')" onmouseout="Help(0)"></div>
+                <div>Reverb Dry/Wet</div>
+                <div id="reverbAmount" onmouseover="Help('reverbAmount')" onmouseout="Help(0)"></div>
+                <div>LPF Cutoff</div>
+                <div id="cutOff" onmouseover="Help('cutOff')" onmouseout="Help(0)"></div>
             </div>
         </div>
         
@@ -112,7 +118,17 @@
             case 0:
                 helpText.textContent = defaultText;
                 break;
-            case "":
+            case "reverbTime":
+                helpText.textContent = "Asjust the reverb time";
+                break;
+            case "reverbAmount":
+                helpText.textContent = "adjust the dry to wet ratio of the reverb bus";
+                break;
+            case "cutOff":
+                helpText.textContent = "control the low pass cutOff frequency";
+                break;
+            case "control":
+                helpText.textContent = "Start and Stop the sequencer. Click save and then a sequence to save it";
                 break;
             case "sampleGain":
                 helpText.textContent = "Control the gain of each sample";
@@ -127,7 +143,7 @@
                 helpText.textContent = "Click on a sequence to load it into the sequencer";
                 break;
             case "seq" : {
-                helpText.textContent = "Click to add sample triggers to the sequencer \n1:kick \n2:snare \n3:rim \n4:snare and Hi-Hat \n5:Hi-Hat \n6:Ride \n7:Crash \n8:Cowbell \n9:CowBell";
+                helpText.textContent = "Click to add sample triggers to the sequencer \n1:kick \n2:snare \n3:clap \n4:rim \n5:Hi-Hat \n6:Ride \n7:Crash \n8:gong \n9:Bell";
                 break;
             }
         }
@@ -139,18 +155,6 @@
     
     
 //CREATES AN ARRAY OF PLAYER OBJECTS TO HOLD EACH SAMPLE
-    var players = [];       
-     //all players are routed to the master
-    //ALL AUDIO FILES ARE DOWNLOADED FROM SOUNDSNAP.COM TO BE USED FOR EDUCATIONAL PURPOSES ONLY. ORIGINAL SOUNDSNAP FILE NAMES CAN BE FOUND TO THE RIGHT OF THEIR DECLARATION.
-    players[0] = new Tone.Player("./sample1.mp3").toMaster(); //ref soundsnap.com (Kick - SynthA Kit - InnerCircle01 - 001.mp3)
-    players[1] = new Tone.Player("./sample2.mp3").toMaster(); //ref soundsnap.com (Snare - HardSnareKit - InnerCircle01 - 001.mp3) 
-    players[2] = new Tone.Player("./sample3.mp3").toMaster(); //ref soundsnap.com (FT1_Twerk_Kit_Small_Clap.mp3)
-    players[3] = new Tone.Player("./sample4.mp3").toMaster(); //ref soundsnap.com (GSspinSNR2.mp3)
-    players[4] = new Tone.Player("./sample5.mp3").toMaster(); //ref soundsnap.com (Attack_Hat27.mp3)
-    players[5] = new Tone.Player("./sample6.mp3").toMaster(); //ref soundsnap.com (GSHDGOOO.2.0OH1.mp3)
-    players[6] = new Tone.Player("./sample7.mp3").toMaster(); //ref soundsnap.com (Ride - Gorilla Trap - InnerCricle02 - 010.mp3)
-    players[7] = new Tone.Player("./sample8.mp3").toMaster(); //ref soundsnap.com (Gong_Small_Stereo_Fienup_005.mp3)
-    players[8] = new Tone.Player("./sample9.mp3").toMaster(); //ref soundsnap.com (Cymbal_Ride_Fienup_008.mp3)
 
 
 //GAIN DIALS CONTROL THE GAIN OF EACH SAMPLE
@@ -174,7 +178,36 @@
         'min': -60,
         'max': 0,
         'step': 0,
+        'value': -12
+    })
+    
+    var mainReverb = new Tone.Freeverb(0, 3000);
+    var reverbTimeSlider = new Nexus.Slider("reverbTime", {
+        'size': [120,20],
+        'mode': 'relative',
+        'min': 0,
+        'max': 0.8,
+        'step': 0,
         'value': 0
+    })
+    
+    var reverbAmountSlider = new Nexus.Slider("reverbAmount", {
+        'size': [120,20],
+        'mode': 'relative',
+        'min': 0,
+        'max': 1,
+        'step': 0,
+        'value': 1
+    })
+    var cutOff;
+    var filter = new Tone.Filter(20000);
+    var cutOffSlider = new Nexus.Slider("cutOff", {
+        'size': [120,20],
+        'mode': 'relative',
+        'min': 0,
+        'max': 100,
+        'step': 0,
+        'value': 100
     })
 
 //THIS NEXUS NUMBER CONTROLS THE BPM OF THE SEQUENCER
@@ -206,7 +239,22 @@
                 'columns': 16 
            });  
     
+    var players = [];       
+     //all players are routed to the master
+    //ALL AUDIO FILES ARE DOWNLOADED FROM SOUNDSNAP.COM TO BE USED FOR EDUCATIONAL PURPOSES ONLY. ORIGINAL SOUNDSNAP FILE NAMES CAN BE FOUND TO THE RIGHT OF THEIR DECLARATION.
+    players[0] = new Tone.Player("./sample1.mp3").chain(filter, mainReverb, Tone.Master); //ref soundsnap.com (Kick - SynthA Kit - InnerCircle01 - 001.mp3)
+    players[1] = new Tone.Player("./sample2.mp3").chain(filter, mainReverb, Tone.Master); //ref soundsnap.com (Snare - HardSnareKit - InnerCircle01 - 001.mp3) 
+    players[2] = new Tone.Player("./sample3.mp3").chain(filter, mainReverb, Tone.Master); //ref soundsnap.com (FT1_Twerk_Kit_Small_Clap.mp3)
+    players[3] = new Tone.Player("./sample4.mp3").chain(filter, mainReverb, Tone.Master); //ref soundsnap.com (GSspinSNR2.mp3)
+    players[4] = new Tone.Player("./sample5.mp3").chain(filter, mainReverb, Tone.Master); //ref soundsnap.com (Attack_Hat27.mp3)
+    players[5] = new Tone.Player("./sample6.mp3").chain(filter, mainReverb, Tone.Master); //ref soundsnap.com (GSHDGOOO.2.0OH1.mp3)
+    players[6] = new Tone.Player("./sample7.mp3").chain(filter, mainReverb, Tone.Master); //ref soundsnap.com (Ride - Gorilla Trap - InnerCricle02 - 010.mp3)
+    players[7] = new Tone.Player("./sample8.mp3").chain(filter, mainReverb, Tone.Master); //ref soundsnap.com (Gong_Small_Stereo_Fienup_005.mp3)
+    players[8] = new Tone.Player("./sample9.mp3").chain(filter, mainReverb, Tone.Master); //ref soundsnap.com (Cymbal_Ride_Fienup_008.mp3)
 
+    for (let x =0; x < 9; x++) {
+        players[x].volume.value = -16;
+    }
     
 ////////////////////////////////// MATRIX MANIPULATION //////////////////////////////////
     
@@ -293,7 +341,7 @@
     
 //THIS TAKES AN INDEX VALUE FROM THE SEQUENCER OBJECT WHICH TRIGGERS THE CORRECT CORROSPONDING SAMPLE.
     function playSample(index) {
-        console.log(index);
+        //console.log(index);
         players[index].start();
     }
     
@@ -316,6 +364,21 @@
     gainSlider.on('change', function(v){
         Tone.Master.volume.value = (v);
     })
+    
+    cutOffSlider.on('change', function(v) {
+        //console.log(v);
+        cutOff = v * 200;
+        filter.frequency.value = cutOff;
+        //console.log(cutOff);
+    })
+    
+    reverbAmountSlider.on('change', function(v) {
+       mainReverb.wet.value = v;
+    })
+    reverbTimeSlider.on('change', function(v) {
+        mainReverb.roomSize.value = v; 
+        console.log(v);
+    })
 
     
 //CONTROL BUTTONS 1 AND 2 CONTROL THE STARTING AND STOPPING OF THE CLOCK OBJECT
@@ -324,18 +387,12 @@
             helpText.textContent = "Sequencer Started";
             clock.start();
     };
-    controlButtons[1].onmouseover = Help("play");
-    controlButtons[1].onmouseout = Help(0);
 
-    
     controlButtons[2].onclick = function() {
             console.log("Sequencer Stopped");
             helpText.textContent = "Sequencer Stopped";
             clock.stop();
     };
-    
-    controlButtons[2].onmouseover = Help("stop");
-    controlButtons[2].onmouseout = Help(0);
     
     
 //CONTROL BUTTON THREE TOGGLES WHETHER OR NOT THE SAVE VARIABLE IS TRUE AND WHICH CHANGES HOW THE SEQUENCE BUTTON EVENT LISTENER BEHAVES
@@ -352,8 +409,6 @@
             }
 
     };
-    controlButtons[3].addEventListener("mouseover", Help("save"));
-    controlButtons[3].addEventListener("mouseout", Help(0));
 
     
 </script>
