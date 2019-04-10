@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<link rel="stylesheet" href="css/normalize.css">
+<link rel="stylesheet" href="css/skeleton.css">
+<link rel="stylesheet" href="css/DrumMachine.css">
+ 
+   
+</head>
+    
+    
+<body >
+<!-- These Rows contain the sequence files -->
+    
+<div class="row">
+    
+    <div class="two columns">
+        <button class="sequenceButton" id="bSequence1"> SEQ 1 </button> 
+    </div>
+    <div class="two columns">
+        <button class="sequenceButton" id="bSequence2"> SEQ 2 </button> 
+    </div>
+    <div class="two columns">
+        <button class="sequenceButton" id="bSequence3"> SEQ 3 </button> 
+    </div>
+    <div class= "two columns"> 
+        <button class="sequenceButton" id="bSequence4"> SEQ 4 </button> 
+    </div>
+</div>
+    
+<div class="row">
+    <div class= "two columns"> 
+    </div>
+    <div class="two columns">
+        <button class="sequenceButton" id="bSequence5"> SEQ 5 </button> 
+    </div>
+    <div class="two columns">
+        <button class="sequenceButton" id="bSequence6"> SEQ 6 </button> 
+    </div>
+    <div class="two columns">
+        <button class="sequenceButton" id="bSequence7"> SEQ 7 </button> 
+    </div>
+</div>
+    
+
+
+<!-- This row contains to control buttons and the sample buttons -->
+    
+<div class="row">
+    
+    <div class = "three columns">    
+        <button class="Swing" id="bSwing"> Swing </button>
+        <div> 
+            <button class="controlButton" id="bPlay">Play</button> 
+            <button class="controlButton" id="bStop">Stop</button>
+        </div>
+        <div>
+            <button class="controlButton"id="bSave">Save</button> 
+            <button class="controlButton"id="bLoad">Load</button>
+        </div>
+    </div>
+    
+    
+    <div class = "two columns">
+            <td> <button class="sampleButton" id="bSampleOne"> SampleOne </button></td>
+            <td> <button class="sampleButton" id="bSampleTwo"> SampleTwo </button></td>
+            <td> <button class="sampleButton" id="bSampleThree"> SampleThree </button></td>
+    </div>
+    <div class = "two columns">
+            <td> <button class="sampleButton" id="bSampleFour"> SampleFour </button></td>
+            <td> <button class="sampleButton" id="bSampleFive"> SampleFive </button></td>
+            <td> <button class="sampleButton" id="bSampleSix"> SampleSix </button></td>
+    </div>  
+    <div class = "two columns">    
+            <td> <button class="sampleButton" id="bSampleSeven"> SampleSeven </button></td>
+            <td> <button class="sampleButton" id="bSampleEight"> SampleEight </button></td>
+            <td> <button class="sampleButton" id="bSampleNine"> SampleNine </button></td>
+    </div>
+</div>
+    
+
+<!-- This lowest row contains the trigger pads that cause the sample triggers -->
+    
+    <div class="row">
+    <div class="twelve columns">
+    <button class="triggerPad" id="bTrigger1"> 1 </button>    <!--this is at the bottom-->
+    <button class="triggerPad" id="bTrigger2"> 2 </button>
+    <button class="triggerPad" id="bTrigger3"> 3 </button>
+    <button class="triggerPad" id="bTrigger4"> 4 </button>
+    <button class="triggerPad" id="bTrigger5"> 5 </button>
+    <button class="triggerPad" id="bTrigger6"> 6 </button>
+    <button class="triggerPad" id="bTrigger7"> 7 </button>
+    <button class="triggerPad" id="bTrigger8"> 8 </button>
+    <button class="triggerPad" id="bTrigger9"> 9 </button>
+    <button class="triggerPad" id="bTrigger10"> 10 </button>
+    <button class="triggerPad" id="bTrigger11"> 11 </button>
+    <button class="triggerPad" id="bTrigger12"> 12 </button>
+    <button class="triggerPad" id="bTrigger13"> 13 </button>
+    <button class="triggerPad" id="bTrigger14"> 14 </button>
+    <button class="triggerPad" id="bTrigger15"> 15 </button>
+    <button class="triggerPad" id="bTrigger16"> 16 </button> 
+            </div>
+    </div>
+ 
+    <script language="JavaScript" type="text/javascript" src="Tone.js"></script> 
+    
+    <script  language="JavaScript" type="text/javascript" src="JavaScript.js"></script>  
+ 
+    
+    
+    
+
+</body>
+</html>

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="DrumMachine.css">
+    <script src="NexusUI.js"></script>
+    <script language="JavaScript" type="text/javascript" src="Tone.js"></script> 
+    <Title>DRUM MACHINE</Title>
+</head>
+
+    
+
+<!-- These Rows contain the sequence buttons -->
+<body>    
+<div id="wrapper">
+        <div>  
+            DRUM MACHINE
+        </div>
+
+    <div class="container">
+        <div class="row" style="background-color:lightblue">
+            <div class="column" style="width:50px">
+                <div> <button id="bCB1" class="controlButton">Play</button> </div>
+                <div> <button id="bCB2" class="controlButton">Stop</button> </div>
+                <div> <button id="bCB3" class="controlButton">Save</button> </div>
+            </div>
+            
+            <div class="column" style="width:200px">
+                HELP TEXT:
+                <div class="helpBox">
+                    <span id=helpText></span>
+                </div>
+            </div>
+            
+            <div class="column" style="width:250px">
+                <div class="SequencePanel" onmouseover="Help('sequences')" onmouseout="Help(0)">
+                    <div>SEQUENCES</div>
+                    <div id="bSequence1" style="display:inline-block"> 1 </div>
+                    <div id="bSequence2" style="display:inline-block"> 2 </div>
+                    <div id="bSequence3" style="display:inline-block"> 3 </div>
+                    <div id="bSequence4" style="display:inline-block"> 4 </div>
+                    <div>
+                        <div id="bSequence5" style="display:inline-block"> 5 </div>
+                        <div id="bSequence6" style="display:inline-block"> 6 </div>
+                        <div id="bSequence7" style="display:inline-block"> 7 </div>
+                        <div id="bSequence8" style="display:inline-block"> 8 </div>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="column" style="width:120px" > <!--This section for controls -->
+                <div id="bpm"  onmouseover="Help('bpm')" onmouseout="Help(0)" style="padding-bottom:1.5em">BPM:</div>
+                <div onmouseover="Help('sampleGain')" onmouseout="Help(0)">
+                <div>Sample Levels</div>
+                1<div id="sampleDial1" class="sampleDials" ></div>
+                2<div id="sampleDial2" class="sampleDials"></div>
+                3<div id="sampleDial3" class="sampleDials"></div>
+                <div>
+                    4<div id="sampleDial4" class="sampleDials"></div>
+                    5<div id="sampleDial5" class="sampleDials"></div>
+                    6<div id="sampleDial6" class="sampleDials"></div>
+                </div>
+                <div>
+                    7<div id="sampleDial7" class="sampleDials"></div>
+                    8<div id="sampleDial8" class="sampleDials"></div>
+                    9<div id="sampleDial9" class="sampleDials"></div>
+                </div>
+                </div>
+            
+            </div>
+            
+            <div v class="column" style="width:120px"> <!--This section for controls -->
+                <div>Main Gain</div>
+                <div id="gainControl" onmouseover="Help('gain')" onmouseout="Help(0)"></div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class=Divider></div>
+        </div>
+    
+        <div class="row" style="background-color:lightblue">
+            <div class="column">
+                <p class="sequencerLabels">9:</p>
+                <p class="sequencerLabels">8:</p>
+                <p class="sequencerLabels">7:</p>
+                <p class="sequencerLabels">6:</p>
+                <p class="sequencerLabels">5:</p>
+                <p class="sequencerLabels">4:</p>
+                <p class="sequencerLabels">3:</p>
+                <p class="sequencerLabels">2:</p>
+                <p class="sequencerLabels">1:</p>   
+            </div>
+            
+            <div class="column">
+                <div style="width:100%" id="sequencer" onmouseover="Help('seq')" onmouseout="Help(0)"></div>
+            </div>
+        
+        </div>
+       
+    </div>
+</div>
+
+    
+<script>
+    //THIS SCRIPT INITIALISES ALL THE CREATES AND INITIALISES ELEMENTS   
+    
+///////////////////////////////////////THIS SECTION CONTAINS ALL THE HELP TEXT////////////////////////////////////////////
+    var defaultText = "Welcome to Drum Machine,load sequences by pressing the sequence button.Press the save button to write to a selected sequence";
+
+    function Help(object) {
+        switch (object) {
+            case 0:
+                helpText.textContent = defaultText;
+                break;
+            case "":
+                break;
+            case "sampleGain":
+                helpText.textContent = "Control the gain of each sample";
+                break;
+            case "gain":
+                helpText.textContent = "This slider controls the master gain of the drum machine";
+                break;
+            case "bpm":
+                helpText.textContent = "Slide this number box to change the tempo";
+                break;
+            case "sequences":
+                helpText.textContent = "Click on a sequence to load it into the sequencer";
+                break;
+            case "seq" : {
+                helpText.textContent = "Click to add sample triggers to the sequencer \n1:kick \n2:snare \n3:rim \n4:snare and Hi-Hat \n5:Hi-Hat \n6:Ride \n7:Crash \n8:Cowbell \n9:CowBell";
+                break;
+            }
+        }
+    }
+    
+    
+    
+    ////////////////////////////CREATE AND INITIALISE HTML ELEMENTS//////////////////////////////////////////
+    
+    
+//CREATES AN ARRAY OF PLAYER OBJECTS TO HOLD EACH SAMPLE
+    var players = [];       
+     //all players are routed to the master
+    //ALL AUDIO FILES ARE DOWNLOADED FROM SOUNDSNAP.COM TO BE USED FOR EDUCATIONAL PURPOSES ONLY. ORIGINAL SOUNDSNAP FILE NAMES CAN BE FOUND TO THE RIGHT OF THEIR DECLARATION.
+    players[0] = new Tone.Player("./sample1.mp3").toMaster(); //ref soundsnap.com (Kick - SynthA Kit - InnerCircle01 - 001.mp3)
+    players[1] = new Tone.Player("./sample2.mp3").toMaster(); //ref soundsnap.com (Snare - HardSnareKit - InnerCircle01 - 001.mp3) 
+    players[2] = new Tone.Player("./sample3.mp3").toMaster(); //ref soundsnap.com (FT1_Twerk_Kit_Small_Clap.mp3)
+    players[3] = new Tone.Player("./sample4.mp3").toMaster(); //ref soundsnap.com (GSspinSNR2.mp3)
+    players[4] = new Tone.Player("./sample5.mp3").toMaster(); //ref soundsnap.com (Attack_Hat27.mp3)
+    players[5] = new Tone.Player("./sample6.mp3").toMaster(); //ref soundsnap.com (GSHDGOOO.2.0OH1.mp3)
+    players[6] = new Tone.Player("./sample7.mp3").toMaster(); //ref soundsnap.com (Ride - Gorilla Trap - InnerCricle02 - 010.mp3)
+    players[7] = new Tone.Player("./sample8.mp3").toMaster(); //ref soundsnap.com (Gong_Small_Stereo_Fienup_005.mp3)
+    players[8] = new Tone.Player("./sample9.mp3").toMaster(); //ref soundsnap.com (Cymbal_Ride_Fienup_008.mp3)
+
+
+//GAIN DIALS CONTROL THE GAIN OF EACH SAMPLE
+    var gainDials = [];
+    for (let x = 1; x < 10; x++) {
+        gainDials[x] = new Nexus.Dial("sampleDial" + x, {
+            'size': [25,25],
+            'interaction': 'radial', 
+            'mode': 'relative',
+            'min': -60,
+            'max': 0,
+            'step': 0,
+            'value': -15
+        })
+    }
+    
+//THIS GAIN SLIDER CONTROLS THE MASTER GAIN
+    var gainSlider = new Nexus.Slider("gainControl", {
+        'size': [120,20],
+        'mode': 'relative',
+        'min': -60,
+        'max': 0,
+        'step': 0,
+        'value': 0
+    })
+
+//THIS NEXUS NUMBER CONTROLS THE BPM OF THE SEQUENCER
+    var nBPM = new Nexus.Number('bpm',{
+        'size': [60,30],
+        'value': 120,
+        'min': 10,
+        'max': 400,
+        'step': 1
+    })
+    
+//THESE NEXUS BUTTONS CONTROL THE LOADING AND SAVING OF SEQUENCES   
+    var SequenceButton = [];
+    for (let x = 1; x < 9; x++) {
+        SequenceButton[x] = new Nexus.Add.Button(('bSequence' + x),{
+       'size': [50,50]}); 
+    }
+    
+//THE CONTROL BUTTONS ALLOW STARTING AND STOPPING OF THE SEQUENCER AS WELL AS TOGGLING TO SAVE A SEQUENCE
+    var controlButtons = []; //1=play 2=stop 3=save
+    for (let x = 1; x < 4; x++) {   
+        controlButtons[x] = document.getElementById("bCB" + x);
+    }; 
+    
+//THE SEQUENCER OBJECT PROVIDES THE MULTI-DIMENSIONAL ARRAY OF BOOLEAN VARIABLES THAT TRIGGERS EACH SAMPLE
+    var sequencer = new Nexus.Sequencer('sequencer', {
+                'size': [750,200],
+                'rows': 9,
+                'columns': 16 
+           });  
+    
+
+    
+////////////////////////////////// MATRIX MANIPULATION //////////////////////////////////
+    
+    
+//THESE BOOLEANS DETERMINE WHAT ACTION IS TAKEN WHEN A SEQUENCE BUTTON IS PRESSED
+    var save = false, load = true;
+    
+//CONVERTS "TRUE" AND "FALSE" STRINGS FROM LOCAL STORAGE INTO BOOLEAN VARIABLES TO READ BY THE SEQUENCER
+    function stringToBool(boolString) { 
+        switch (boolString) {
+            case "true" : 
+                return true;
+            case "false" :
+                return false;
+            default :
+                console.log("Jack Error: Local Storage is not reading a true of false value");
+                break;
+        }
+    }
+    
+
+//THIS WRITES EACH ELEMENT OF THE SEQUENCER MATRIX SEPERATLY INTO LOCAL STORAGE WITH A UNIQUE IDENTIFIER (S + SEQUENCE + Ypos + Xpos) 
+    function writeSequence(s) {     
+        for (let y = 0; y <9; y++) {
+            for (let x =0; x < 16; x++) {
+                if (save == true) {                  
+                    localStorage.setItem("S" + s + y + x, JSON.stringify(sequencer.matrix.pattern[y][x]));  //SAVE EACH ELEMENT TO STORAGE
+                }   
+            }
+        }
+        //RETURN THE SAVE BUTTON TO ITS ORIGINAL COLOUR TO INDICATE THE COMPLETION OF THE SAVING PROCESS
+        controlButtons[3].style.color = 'black'; 
+        
+    }
+
+//THIS WORKS SIMILARLY TO WRITING THE SEQUENCE TO STORAGE, IT USES THE SAME INDENTIFIER ALGORITHM TO RETREIVE AN INDIVIDUAL SEQUENCE
+    function loadSequence(s) {
+    //console.log(sequencer.matrix.pattern);
+        for (let y = 0; y <9; y++) {
+            for (let x =0; x < 16; x++) {
+                sequencer.matrix.set.cell(x,y, stringToBool(localStorage.getItem("S" + s + y + x)));
+            }
+        }
+    }
+                        
+//THIS LISTENED FOR A SEQUENCER BUTTON EVENT AND COMPARES IT TO THE SAVE AND LOAD VARIABLES TO EITHER SAVE OR LOAD A SEQUENCE
+    for (let x = 1; x < 9; x++) {
+        SequenceButton[x].on('change', function(v) {
+            if (v.state == false) {
+                if (load == true) {
+                    loadSequence(x-1);
+                    console.log("Sequence Loaded",  x);
+                }
+                if (save == true) {
+                    writeSequence(x-1);
+                    console.log("Sequence Saved", x);
+                    load = true;
+                    save = false;
+                }
+            }
+        
+        })
+    } 
+    
+///////////////////////////////SEQUENCER FUNCTIONS//////////////////////////////////////   
+    
+ //THIS INCREMENTS THE SEQUENCER TO THE NEXT STEP AT THE CALLBACK TRIGGER OF THE TONE.CLOCK OBJECT.
+    function nextCol() {
+        sequencer.next();
+    }
+
+//CHECKS THROUGH EACH COLUMN OF THE SEQUENCER WHEN IT IS PROGRESSED AND CALLS playSample(sample) WHEN APPROPRIATE.
+    sequencer.on('step',function(v) {
+        for (let x = 0; x < 9; x++) {
+            if (v[x] == 1)
+                playSample(x);
+        } 
+    })                            
+    
+//THIS HANDLES THE CALLING OF THE NextCol() FUNCTION AT A DEFINED INTERVAL AND IS THE MAIN CLOCK OF THE SEQUENCER
+    var clock = new Tone.Clock(function tick() {
+        nextCol();
+    }, 2); 
+    
+//THIS TAKES AN INDEX VALUE FROM THE SEQUENCER OBJECT WHICH TRIGGERS THE CORRECT CORROSPONDING SAMPLE.
+    function playSample(index) {
+        console.log(index);
+        players[index].start();
+    }
+    
+    
+///////////////////////////////EVENTS AND LISTENERS//////////////////////////////////////  
+  
+//THIS LISTENS FOR A CHANGE IN THE NUMBER 'BPM' OBJECT WHICH IN TURN ADJUSTS THE INTERVAL TIME OF THE CLOCK OBJECT
+    nBPM.on('change',function(v) {
+        clock.frequency.value = (v/60)*2;
+    })
+    
+//THIS LISTENS FOR A CHANGE ON ANY OF THE GAIN DIALS WHICH IN TURN ADJUSTS THE VOLUME VLAUE OF THE CORROSPONDING PLAYER OBJECT
+    for (let x = 1; x < 9; x++) {
+        gainDials[x].on('change',function(v) {
+        players[x-1].volume.value = (v);
+})
+    }
+    
+//THIS LISTENS FOR CHANGES IN THE MASTER GAIN SLIDER AND CHANGES THE VOLUME VALUE OF THE TONE.MASTER OBJECT.
+    gainSlider.on('change', function(v){
+        Tone.Master.volume.value = (v);
+    })
+
+    
+//CONTROL BUTTONS 1 AND 2 CONTROL THE STARTING AND STOPPING OF THE CLOCK OBJECT
+    controlButtons[1].onclick = function() {
+            console.log("Sequencer Started");
+            helpText.textContent = "Sequencer Started";
+            clock.start();
+    };
+    controlButtons[1].onmouseover = Help("play");
+    controlButtons[1].onmouseout = Help(0);
+
+    
+    controlButtons[2].onclick = function() {
+            console.log("Sequencer Stopped");
+            helpText.textContent = "Sequencer Stopped";
+            clock.stop();
+    };
+    
+    controlButtons[2].onmouseover = Help("stop");
+    controlButtons[2].onmouseout = Help(0);
+    
+    
+//CONTROL BUTTON THREE TOGGLES WHETHER OR NOT THE SAVE VARIABLE IS TRUE AND WHICH CHANGES HOW THE SEQUENCE BUTTON EVENT LISTENER BEHAVES
+    controlButtons[3].onclick = function() {
+            controlButtons[3].style.color = 'red';
+            if (save == true) {
+                controlButtons[3].style.color = 'black';
+                save = false;
+            }
+            else {
+                console.log("Saving Sequence");
+                load = false;
+                save = true;
+            }
+
+    };
+    controlButtons[3].addEventListener("mouseover", Help("save"));
+    controlButtons[3].addEventListener("mouseout", Help(0));
+
+    
+</script>
+</body>
+
+</html>
